@@ -1,8 +1,14 @@
 import NextAuth from "next-auth";
+import Google from "next-auth/providers/google";
+import Facebook from "next-auth/providers/facebook";
+import TikTok from "next-auth/providers/tiktok";
 import Credentials from "next-auth/providers/credentials";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
+    Google,
+    Facebook,
+    TikTok,
     Credentials({
       // You can specify which fields should be submitted, by adding keys to the `credentials` object.
       // e.g. domain, username, password, 2FA token, etc.

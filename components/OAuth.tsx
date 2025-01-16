@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { signIn } from "@/auth";
 
 interface OAuthProps {
   borderColor: "black" | "white";
@@ -8,39 +9,64 @@ const OAuth = ({ borderColor }: OAuthProps) => {
   return (
     <div className="mt-5 w-full flex flex-col items-center">
       <div className="flex gap-3">
-        <button
-          className={`flex items-center justify-center w-[48px] h-[48px] border-2 border-[${borderColor}]`}
-          style={{ borderRadius: "50%" }}
+        <form
+          action={async () => {
+            "use server";
+            await signIn("facebook");
+          }}
         >
-          <Image
-            src="/onboarding/facebook.svg"
-            alt="Facebook"
-            width={24}
-            height={24}
-          />
-        </button>
-        <button
-          className={`flex items-center justify-center w-[48px] h-[48px]  border-2 border-[${borderColor}]`}
-          style={{ borderRadius: "50%" }}
+          <button
+            className={`flex items-center justify-center w-[48px] h-[48px] border-2 border-[${borderColor}]`}
+            style={{ borderRadius: "50%" }}
+            type="submit"
+          >
+            <Image
+              src="/onboarding/facebook.svg"
+              alt="Facebook"
+              width={24}
+              height={24}
+            />
+          </button>
+        </form>
+
+        <form
+          action={async () => {
+            "use server";
+            await signIn("google");
+          }}
         >
-          <Image
-            src="/onboarding/google.svg"
-            alt="Gmail"
-            width={24}
-            height={24}
-          />
-        </button>
-        <button
-          className={`flex items-center justify-center w-[48px] h-[48px] border-2 border-[${borderColor}]`}
-          style={{ borderRadius: "50%" }}
+          <button
+            className={`flex items-center justify-center w-[48px] h-[48px]  border-2 border-[${borderColor}]`}
+            style={{ borderRadius: "50%" }}
+            type="submit"
+          >
+            <Image
+              src="/onboarding/google.svg"
+              alt="Google"
+              width={24}
+              height={24}
+            />
+          </button>
+        </form>
+        <form
+          action={async () => {
+            "use server";
+            await signIn("tiktok");
+          }}
         >
-          <Image
-            src={`/onboarding/apple-${borderColor}.svg`}
-            alt="Apple"
-            width={24}
-            height={24}
-          />
-        </button>
+          <button
+            className={`flex items-center justify-center w-[48px] h-[48px] border-2 border-[${borderColor}]`}
+            style={{ borderRadius: "50%" }}
+            type="submit"
+          >
+            <Image
+              src={`/onboarding/tiktok-${borderColor}.svg`}
+              alt="Apple"
+              width={24}
+              height={24}
+            />
+          </button>
+        </form>
       </div>
       <div className="flex gap-2 items-center justify-center mt-6 w-full max-w-[425px]">
         <hr
