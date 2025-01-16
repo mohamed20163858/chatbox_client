@@ -51,7 +51,7 @@ const OAuth = ({ borderColor }: OAuthProps) => {
         <form
           action={async () => {
             "use server";
-            await signIn("tiktok");
+            await signIn("discord");
           }}
         >
           <button
@@ -60,8 +60,8 @@ const OAuth = ({ borderColor }: OAuthProps) => {
             type="submit"
           >
             <Image
-              src={`/onboarding/tiktok-${borderColor}.svg`}
-              alt="Apple"
+              src={`/onboarding/discord-${borderColor}.svg`}
+              alt="Discord"
               width={24}
               height={24}
             />
