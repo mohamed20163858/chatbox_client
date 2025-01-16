@@ -1,14 +1,15 @@
 import OAuth from "@/components/OAuth";
 import Image from "next/image";
 import Link from "next/link";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-
-const Onboarding = async () => {
-  const session = await auth();
-
+import { useRouter } from "next/navigation";
+import { Session } from "next-auth"; // Import Session type from next-auth
+interface SplashPageProps {
+  session: Session | null; // Define the type of session as Session or null
+}
+const Onboarding = ({ session }: SplashPageProps) => {
+  const router = useRouter();
   if (session?.user) {
-    redirect("/home");
+    router.push("/home");
   } else {
     return (
       <div
