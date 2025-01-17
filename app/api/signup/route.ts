@@ -7,22 +7,30 @@ export async function POST(req: NextRequest) {
     const data = await req.json();
 
     // Validate and process signup data (e.g., name, email, password)
-    const { email, password } = data;
+    const { name, email, password } = data;
     const BACKEND_URL =
       process.env.BACKEND_URL || "https://chatbox-server-eight.vercel.app";
     const response = await fetch(`${BACKEND_URL}/api/user/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ name, email, password }),
     });
-    await response.json();
+
+    const user = await response.json();
+    if (!response.ok) {
+      throw new Error(user.error || "Invalid credentials");
+    }
+    if (response.ok && user.token) {
+      return NextResponse.json(
+        { message: "User created successfully" },
+        { status: 201 }
+      );
+    }
+  } catch (error) {
     return NextResponse.json(
-      { message: "User created successfully" },
-      { status: 201 }
-    );
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to create user" },
+      {
+        error: error instanceof Error ? error.message : "Failed to create user",
+      },
       { status: 500 }
     );
   }

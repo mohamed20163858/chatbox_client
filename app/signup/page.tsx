@@ -2,14 +2,16 @@
 "use client";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { signInSchema } from "@/lib/zod";
+import { signUpSchema } from "@/lib/zod";
 import { ZodError } from "zod";
 export default function SignUp() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {}
-  );
+  const [errors, setErrors] = useState<{
+    name?: string;
+    email?: string;
+    password?: string;
+  }>({});
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
@@ -17,14 +19,14 @@ export default function SignUp() {
 
     const formData = new FormData(event.currentTarget);
     const data = {
-      //   name: formData.get("name") as string,
+      name: formData.get("name") as string,
       email: formData.get("email") as string,
       password: formData.get("password") as string,
     };
 
     try {
       // Validate inputs
-      signInSchema.parse(data);
+      signUpSchema.parse(data);
 
       const response = await fetch("/api/signup", {
         method: "POST",
@@ -47,9 +49,11 @@ export default function SignUp() {
     } catch (error) {
       if (error instanceof ZodError) {
         // Capture and display validation errors
-        const formErrors: { email?: string; password?: string } = {};
+        const formErrors: { name?: string; email?: string; password?: string } =
+          {};
         error.errors.forEach((err) => {
-          formErrors[err.path[0] as "email" | "password"] = err.message;
+          formErrors[err.path[0] as "name" | "email" | "password"] =
+            err.message;
         });
         setErrors(formErrors);
       } else {
@@ -64,6 +68,11 @@ export default function SignUp() {
 
   return (
     <form onSubmit={handleSubmit}>
+      <label>
+        Name
+        <input name="name" type="text" required />
+        {errors.name && <p style={{ color: "red" }}>{errors.name}</p>}
+      </label>
       <label>
         Email
         <input name="email" type="email" required />
