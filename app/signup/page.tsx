@@ -2,11 +2,14 @@
 "use client";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-
+import { signInSchema } from "@/lib/zod";
+import { ZodError } from "zod";
 export default function SignUp() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {}
+  );
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
@@ -20,6 +23,9 @@ export default function SignUp() {
     };
 
     try {
+      // Validate inputs
+      signInSchema.parse(data);
+
       const response = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -38,8 +44,19 @@ export default function SignUp() {
           callbackUrl: "/", // Redirect to a desired page after login
         });
       }
-    } catch {
-      setError("An unexpected error occurred");
+    } catch (error) {
+      if (error instanceof ZodError) {
+        // Capture and display validation errors
+        const formErrors: { email?: string; password?: string } = {};
+        error.errors.forEach((err) => {
+          formErrors[err.path[0] as "email" | "password"] = err.message;
+        });
+        setErrors(formErrors);
+      } else {
+        // Handle other errors (e.g., network or server errors)
+        setError("An unexpected error occurred");
+        console.error(error);
+      }
     } finally {
       setLoading(false);
     }
@@ -50,10 +67,12 @@ export default function SignUp() {
       <label>
         Email
         <input name="email" type="email" required />
+        {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
       </label>
       <label>
         Password
         <input name="password" type="password" required />
+        {errors.password && <p style={{ color: "red" }}>{errors.password}</p>}
       </label>
       <button type="submit" disabled={loading}>
         {loading ? "Signing up..." : "Sign Up"}
