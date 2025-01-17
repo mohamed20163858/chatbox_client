@@ -30,13 +30,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             body: JSON.stringify(credentials),
           });
           const user = await res.json();
+          if (!res.ok) {
+            throw new Error(user.error || "Invalid credentials");
+          }
           if (res.ok && user.token) {
             // console.log("User logged in:", user);
             return user;
           }
           return null;
         } catch (error) {
-          console.error("Authorization error:", error);
+          console.log("Authorization error:", error);
           return null;
         }
       },
