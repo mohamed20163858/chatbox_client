@@ -44,12 +44,16 @@ const Onboarding = async () => {
             family.
           </p>
           <OAuth borderColor={"white"} />
-          <button
-            className="bg-white text-black rounded-[16px] w-[90%] max-w-[425px] font-medium text-[16px] leading-[16px] p-4 mt-5"
-            style={{ fontFamily: "Caros Italic", fontStyle: "normal" }}
-          >
-            Sign up within mail
+          <button className="mt-5 w-[90%]">
+            <Link
+              className="bg-white text-black rounded-[16px] block w-full  max-w-[425px] font-medium text-[16px] leading-[16px] p-4 "
+              style={{ fontFamily: "Caros Italic", fontStyle: "normal" }}
+              href="/signup"
+            >
+              Sign up within mail
+            </Link>
           </button>
+
           <div className="my-5">
             <Link
               href="/signin"

@@ -1,7 +1,7 @@
 export { auth as middleware } from "@/auth";
 export const config = {
   matcher: [
-    "/((?!onboarding|api|_next/static|_next/image|fonts|favicon.ico|logo.svg|$).*)",
+    "/((?!onboarding|signup|api|_next/static|_next/image|fonts|favicon.ico|logo.svg|$).*)",
   ],
 };
 // import { auth } from "@/auth";
