@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { signUpSchema } from "@/lib/zod";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 import { ZodError } from "zod";
-export default function SignUp() {
+function SignUp() {
   // const params = useParams();
   const searchParams = useSearchParams();
   // Decode dynamic route parameter
@@ -137,5 +138,13 @@ export default function SignUp() {
       </button>
       {error && <p style={{ color: "red" }}>{error}</p>}
     </form>
+  );
+}
+
+export default function PageWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignUp />
+    </Suspense>
   );
 }
