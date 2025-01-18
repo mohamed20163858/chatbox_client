@@ -103,7 +103,7 @@ function SignUp() {
           onChange={(e) => {
             setNameValue(e.target.value);
           }}
-          autoComplete="email"
+          autoComplete="name"
           value={nameValue}
           required
         />

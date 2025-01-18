@@ -3,6 +3,7 @@ import Google from "next-auth/providers/google";
 import Facebook from "next-auth/providers/facebook";
 import TikTok from "next-auth/providers/tiktok";
 import Discord from "next-auth/providers/discord";
+import jwt from "jsonwebtoken";
 
 import Credentials from "next-auth/providers/credentials";
 
@@ -26,7 +27,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             "https://chatbox-server-eight.vercel.app";
           const res = await fetch(`${BACKEND_URL}/api/user/login`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+            },
             body: JSON.stringify(credentials),
           });
           const user = await res.json();
@@ -51,12 +54,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       //   console.log("User:", user);
       const BACKEND_URL =
         process.env.BACKEND_URL || "https://chatbox-server-eight.vercel.app";
+      if (!process.env.JWT_SECRET) {
+        throw new Error("JWT_SECRET is not defined");
+      }
+      console.log(process.env.JWT_SECRET);
+      const token = jwt.sign({ app: "Next.js" }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+      });
+      // console.log("generated token:- ", token);
+      // const decoded = jwt.decode(token, { complete: true });
+      // console.log("Decoded JWT:", decoded);
       const res = await fetch(`${BACKEND_URL}/api/user/check`, {
         method: "POST",
+        body: JSON.stringify({ email: user.user.email }),
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ email: user.user.email }),
       });
 
       const data = await res.json();
@@ -99,5 +113,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/signin",
     error: "/signin",
   },
-  //   debug: true,
+  // debug: true,
 });
