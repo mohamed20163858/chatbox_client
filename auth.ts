@@ -46,17 +46,58 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
+    async signIn(user) {
+      // Check if user has set username and password
+      //   console.log("User:", user);
+      const BACKEND_URL =
+        process.env.BACKEND_URL || "https://chatbox-server-eight.vercel.app";
+      const res = await fetch(`${BACKEND_URL}/api/user/check`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: user.user.email }),
+      });
+
+      const data = await res.json();
+      // console.log("User data:", data);
+      if (!data.hasCredentials) {
+        // Redirect to a custom page to set username/password
+        console.log("User has not set username/password");
+        return `/signup?email=${encodeURIComponent(
+          user.user.email as string
+        )}&name=${encodeURIComponent(user.user.name as string)}`;
+      }
+      //   delete data.hasCredentials;
+      user.user.name = data.name;
+      //   console.log("after User:", user);
+      return true; // Proceed with the default flow
+    },
     authorized: async ({ auth }) => {
       // Logged in users are authenticated, otherwise redirect to login page
       return !!auth;
     },
-    async redirect({ baseUrl }) {
-      // Redirect to a specific path after sign-in
-      return `${baseUrl}/home`; // Example redirect to "/dashboard"
+    async jwt({ token, user }) {
+      if (user) {
+        // Attach your custom user data to the token
+        token.name = user.name;
+      }
+      return token;
     },
+    async session({ session, token }) {
+      // Attach custom user data to session
+      //   console.log("Session:", user);
+      session.user.name = token.name;
+      return session;
+    },
+    // async redirect({ baseUrl }) {
+    //   // Redirect to a specific path after sign-in
+    //   return `${baseUrl}/home`; // Example redirect to "/dashboard"
+    // },
   },
   pages: {
     signIn: "/signin",
+    error: "/signin",
   },
-  debug: true,
+  //   debug: true,
 });

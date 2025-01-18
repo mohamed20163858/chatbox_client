@@ -1,10 +1,23 @@
 // pages/signup.tsx
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { signUpSchema } from "@/lib/zod";
+import { useSearchParams } from "next/navigation";
+
 import { ZodError } from "zod";
 export default function SignUp() {
+  // const params = useParams();
+  const searchParams = useSearchParams();
+  // Decode dynamic route parameter
+  // const decodedSlug = params.slug
+  //    decodeURIComponent(params.slug as string)
+  //   : null;
+  const email = searchParams.get("email");
+  const name = searchParams.get("name");
+  const [emailValue, setEmailValue] = useState("");
+  const [nameValue, setNameValue] = useState("");
+  const [message, setMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{
@@ -12,6 +25,17 @@ export default function SignUp() {
     email?: string;
     password?: string;
   }>({});
+  useEffect(() => {
+    if (email || name) {
+      setMessage("Please complete your registration");
+      if (email) {
+        setEmailValue(email);
+      }
+      if (name) {
+        setNameValue(name);
+      }
+    }
+  }, [email, name]);
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
@@ -68,19 +92,44 @@ export default function SignUp() {
 
   return (
     <form onSubmit={handleSubmit}>
+      {message && <p style={{ color: "red" }}>{message}</p>}
+
       <label>
         Name
-        <input name="name" type="text" required />
+        <input
+          name="name"
+          type="text"
+          onChange={(e) => {
+            setNameValue(e.target.value);
+          }}
+          autoComplete="email"
+          value={nameValue}
+          required
+        />
         {errors.name && <p style={{ color: "red" }}>{errors.name}</p>}
       </label>
       <label>
         Email
-        <input name="email" type="email" required />
+        <input
+          name="email"
+          type="email"
+          onChange={(e) => {
+            setEmailValue(e.target.value);
+          }}
+          autoComplete="email"
+          value={emailValue}
+          required
+        />
         {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
       </label>
       <label>
         Password
-        <input name="password" type="password" required />
+        <input
+          name="password"
+          type="password"
+          autoComplete="new-password"
+          required
+        />
         {errors.password && <p style={{ color: "red" }}>{errors.password}</p>}
       </label>
       <button type="submit" disabled={loading}>
