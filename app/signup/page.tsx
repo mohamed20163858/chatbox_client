@@ -5,9 +5,15 @@ import { signIn } from "next-auth/react";
 import { signUpSchema } from "@/lib/zod";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 import { ZodError } from "zod";
 function SignUp() {
+  const { data: session } = useSession();
+  if (session?.user) {
+    redirect("/home");
+  }
   // const params = useParams();
   const searchParams = useSearchParams();
   // Decode dynamic route parameter

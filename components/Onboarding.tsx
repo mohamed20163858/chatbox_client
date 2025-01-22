@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Session } from "next-auth"; // Import Session type from next-auth
+
 interface SplashPageProps {
   session: Session | null; // Define the type of session as Session or null
 }
