@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import Signin from "@/components/Signin";
+import OAuth from "@/components/OAuth";
 import { redirect } from "next/navigation";
 
 export default async function Dashboard() {
@@ -10,5 +10,5 @@ export default async function Dashboard() {
     redirect("/home");
   }
 
-  return <Signin session={session} />;
+  return <OAuth borderColor="black" />;
 }
