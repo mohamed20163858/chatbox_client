@@ -11,7 +11,7 @@ const OAuth = ({ borderColor }: OAuthProps) => {
     <div className="mt-5 w-full flex flex-col items-center">
       <div className="flex gap-3">
         <button
-          onClick={() => signIn("facebook")}
+          onClick={() => signIn("facebook", { callbackUrl: "/home" })}
           className={`flex items-center justify-center w-[48px] h-[48px] border-2 ${
             borderColor === "black" ? "border-black" : "border-white"
           }`}
@@ -32,7 +32,7 @@ const OAuth = ({ borderColor }: OAuthProps) => {
           }`}
           style={{ borderRadius: "50%" }}
           type="submit"
-          onClick={() => signIn("google")}
+          onClick={() => signIn("google", { callbackUrl: "/home" })}
         >
           <Image
             src="/onboarding/google.svg"
@@ -48,7 +48,7 @@ const OAuth = ({ borderColor }: OAuthProps) => {
           }`}
           style={{ borderRadius: "50%" }}
           type="submit"
-          onClick={() => signIn("discord")}
+          onClick={() => signIn("discord", { callbackUrl: "/home" })}
         >
           <Image
             src={`/onboarding/discord-${borderColor}.svg`}
