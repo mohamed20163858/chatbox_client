@@ -1,17 +1,19 @@
 "use client";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signInSchema } from "@/lib/zod";
 import { ZodError } from "zod";
 import { redirect } from "next/navigation";
 import OAuth from "@/components/OAuth";
 import { Session } from "next-auth"; // Import Session type from next-auth
+import Link from "next/link";
 
 export default function Signin({ session }: { session: Session | null }) {
   // const router = useRouter();
 
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState("");
+  const [disable, setDisable] = useState(true);
   const [password, setPassword] = useState("");
 
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
@@ -20,6 +22,13 @@ export default function Signin({ session }: { session: Session | null }) {
   if (session?.user) {
     redirect("/home");
   }
+  useEffect(() => {
+    if (email && password) {
+      setDisable(false);
+    } else {
+      setDisable(true);
+    }
+  }, [email, password]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -73,46 +82,68 @@ export default function Signin({ session }: { session: Session | null }) {
       <OAuth borderColor="black" />
       <form
         onSubmit={handleSubmit}
-        className="mt-[40px] w-[327px] flex flex-col gap-1"
+        className="mt-[40px] w-[327px] flex grow flex-col gap-1 justify-between "
       >
-        <label
-          htmlFor="email"
-          className="font-['Circular Std'] font-medium text-[14px] text-[#24786D] not-italic leading-[20px] tracking-[0.1px] "
-        >
-          Your email
-        </label>
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor="email"
+            className="font-['Circular Std'] font-medium text-[14px] text-[#24786D] not-italic leading-[20px] tracking-[0.1px] "
+          >
+            Your email
+          </label>
 
-        <input
-          name="email"
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          autoComplete="email"
-          className="border-b-2 border-[#CDD1D0] my-4 bg-white py-2 px-1 font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]"
-          required
-        />
-        {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
-        <label
-          htmlFor="password"
-          className="font-['Circular Std'] font-medium text-[14px] text-[#24786D] not-italic leading-[20px] tracking-[0.1px] mt-4 "
-        >
-          Password
-        </label>
+          <input
+            name="email"
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+            className="border-b-2 border-[#CDD1D0] my-4 bg-white py-2 px-1 font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]"
+            required
+          />
+          {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
+          <label
+            htmlFor="password"
+            className="font-['Circular Std'] font-medium text-[14px] text-[#24786D] not-italic leading-[20px] tracking-[0.1px] mt-4 "
+          >
+            Password
+          </label>
 
-        <input
-          name="password"
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          autoComplete="new-password"
-          className="border-b-2 border-[#CDD1D0] my-4 bg-white py-2 px-1 font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]"
-          required
-        />
-        {errors.password && <p style={{ color: "red" }}>{errors.password}</p>}
-        <input type="submit" value="Log in" />
-        {error && <p style={{ color: "red" }}>{error}</p>}
+          <input
+            name="password"
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="new-password"
+            className="border-b-2 border-[#CDD1D0] my-4 bg-white py-2 px-1 font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]"
+            required
+          />
+          {errors.password && <p style={{ color: "red" }}>{errors.password}</p>}
+        </div>
+
+        <div className="mb-[60px]">
+          <input
+            type="submit"
+            value="Log in"
+            disabled={disable}
+            className={`
+            w-[327px]  rounded-[16px]  font-semibold text-[16px] leading-[16px] p-4
+            ${
+              disable
+                ? "bg-[#F3F6F6] text-[#797C7B]"
+                : "bg-[#24786D] text-white"
+            }`}
+          />
+          <Link
+            className="font-['Circular Std'] text-[#24786D]  block w-full  max-w-[425px] font-medium text-[14px] not-italic leading-[14px] text-center mt-4 "
+            href="/forgot-password"
+          >
+            Forgot password?
+          </Link>
+          {error && <p style={{ color: "red" }}>{error}</p>}
+        </div>
       </form>
     </div>
   );
