@@ -5,14 +5,9 @@ import { signIn } from "next-auth/react";
 import { signUpSchema } from "@/lib/zod";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { redirect } from "next/navigation";
-import { Session } from "next-auth"; // Import Session type from next-auth
 
 import { ZodError } from "zod";
-function SignUp({ session }: { session: Session | null }) {
-  if (session?.user) {
-    redirect("/home");
-  }
+function SignUp() {
   // const params = useParams();
   const searchParams = useSearchParams();
   // Decode dynamic route parameter
@@ -68,6 +63,7 @@ function SignUp({ session }: { session: Session | null }) {
     event.preventDefault();
     setLoading(true);
     setError(null);
+    setErrors({});
 
     const formData = new FormData(event.currentTarget);
     const data = {
@@ -251,10 +247,10 @@ function SignUp({ session }: { session: Session | null }) {
   );
 }
 
-export default function PageWrapper({ session }: { session: Session | null }) {
+export default function PageWrapper() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <SignUp session={session} />
+      <SignUp />
     </Suspense>
   );
 }

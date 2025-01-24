@@ -10,5 +10,5 @@ export default async function Dashboard() {
     redirect("/home");
   }
 
-  return <Signup session={session} />;
+  return <Signup />;
 }
