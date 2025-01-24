@@ -135,12 +135,14 @@ function SignUp({ session }: { session: Session | null }) {
         onSubmit={handleSubmit}
         className="mt-[40px] w-[327px] flex grow flex-col gap-1 justify-between "
       >
-        {message && <p style={{ color: "red" }}>{message}</p>}
+        {message && <p className="error">{message}</p>}
 
         <div className="flex flex-col gap-1">
           <label
             htmlFor="name"
-            className="font-['Circular Std'] font-medium text-[14px] text-[#24786D] not-italic leading-[20px] tracking-[0.1px] "
+            className={`font-['Circular Std'] font-medium text-[14px] ${
+              errors.name ? "text-[#FF2D1B]" : "text-[#24786D]"
+            } not-italic leading-[20px] tracking-[0.1px] `}
           >
             Your name
           </label>
@@ -152,14 +154,18 @@ function SignUp({ session }: { session: Session | null }) {
             value={nameValue}
             onChange={(e) => setNameValue(e.target.value)}
             autoComplete="name"
-            className="border-b-2 border-[#CDD1D0] my-4 bg-white py-2 px-1 font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]"
+            className={`border-b-2 ${
+              errors.name ? "border-[#FF2D1B]" : "border-[#CDD1D0]"
+            }  bg-white py-2  font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]`}
             required
           />
-          {errors.name && <p style={{ color: "red" }}>{errors.name}</p>}
+          {errors.name && <p className="error">{errors.name}</p>}
 
           <label
             htmlFor="email"
-            className="font-['Circular Std'] font-medium text-[14px] text-[#24786D] not-italic leading-[20px] tracking-[0.1px] "
+            className={`font-['Circular Std'] font-medium text-[14px] ${
+              errors.email ? "text-[#FF2D1B]" : "text-[#24786D]"
+            } not-italic leading-[20px] tracking-[0.1px] mt-4 `}
           >
             Your email
           </label>
@@ -171,13 +177,17 @@ function SignUp({ session }: { session: Session | null }) {
             value={emailValue}
             onChange={(e) => setEmailValue(e.target.value)}
             autoComplete="email"
-            className="border-b-2 border-[#CDD1D0] my-4 bg-white py-2 px-1 font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]"
+            className={`border-b-2 ${
+              errors.email ? "border-[#FF2D1B]" : "border-[#CDD1D0]"
+            }  bg-white py-2  font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]`}
             required
           />
-          {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
+          {errors.email && <p className="error">{errors.email}</p>}
           <label
             htmlFor="password"
-            className="font-['Circular Std'] font-medium text-[14px] text-[#24786D] not-italic leading-[20px] tracking-[0.1px] mt-4 "
+            className={`font-['Circular Std'] font-medium text-[14px] ${
+              errors.password ? "text-[#FF2D1B]" : "text-[#24786D]"
+            } not-italic leading-[20px] tracking-[0.1px] mt-4 `}
           >
             Password
           </label>
@@ -189,13 +199,17 @@ function SignUp({ session }: { session: Session | null }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
-            className="border-b-2 border-[#CDD1D0] my-4 bg-white py-2 px-1 font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]"
+            className={`border-b-2 ${
+              errors.password ? "border-[#FF2D1B]" : "border-[#CDD1D0]"
+            }  bg-white py-2  font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]`}
             required
           />
-          {errors.password && <p style={{ color: "red" }}>{errors.password}</p>}
+          {errors.password && <p className="error">{errors.password}</p>}
           <label
             htmlFor="confirm-password"
-            className="font-['Circular Std'] font-medium text-[14px] text-[#24786D] not-italic leading-[20px] tracking-[0.1px] mt-4 "
+            className={`font-['Circular Std'] font-medium text-[14px] ${
+              confirmPasswordError ? "text-[#FF2D1B]" : "text-[#24786D]"
+            } not-italic leading-[20px] tracking-[0.1px] mt-4 `}
           >
             Confirm Password
           </label>
@@ -207,18 +221,20 @@ function SignUp({ session }: { session: Session | null }) {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             autoComplete="new-password"
-            className="border-b-2 border-[#CDD1D0] my-4 bg-white py-2 px-1 font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]"
+            className={`border-b-2 ${
+              confirmPasswordError ? "border-[#FF2D1B]" : "border-[#CDD1D0]"
+            }  bg-white py-2  font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]`}
             required
           />
+          {confirmPasswordError && (
+            <p className="error">{confirmPasswordError}</p>
+          )}
         </div>
-        {confirmPasswordError && (
-          <p style={{ color: "red" }}>{confirmPasswordError}</p>
-        )}
 
         <div className="mb-[60px]">
           <input
             type="submit"
-            value={loading ? "Creating an account..." : "Cretae an account"}
+            value={loading ? "Creating an account..." : "Create an account"}
             disabled={disable}
             className={`
             w-[327px]  rounded-[16px]  font-semibold text-[16px] leading-[16px] p-4
@@ -228,7 +244,7 @@ function SignUp({ session }: { session: Session | null }) {
                 : "bg-[#24786D] text-white"
             }`}
           />
-          {error && <p style={{ color: "red" }}>{error}</p>}
+          {error && <p className="error !text-center !mt-5">{error}</p>}
         </div>
       </form>
     </div>

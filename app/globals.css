@@ -229,3 +229,14 @@ body {
 input:focus {
   outline: none;
 }
+
+.error {
+  font-family: "Circular Std";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 12px;
+  color: #ff2d1b;
+  text-align: right;
+  margin-top: 5px;
+}
