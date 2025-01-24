@@ -3,25 +3,23 @@ import { signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { signInSchema } from "@/lib/zod";
 import { ZodError } from "zod";
-import { redirect } from "next/navigation";
 import OAuth from "@/components/OAuth";
-import { Session } from "next-auth"; // Import Session type from next-auth
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-export default function Signin({ session }: { session: Session | null }) {
-  // const router = useRouter();
+export default function Signin() {
+  const router = useRouter();
 
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [disable, setDisable] = useState(true);
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
-  if (session?.user) {
-    redirect("/home");
-  }
+
   useEffect(() => {
     if (email && password) {
       setDisable(false);
@@ -32,6 +30,8 @@ export default function Signin({ session }: { session: Session | null }) {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
+    setError(null);
     const formData = new FormData(event.currentTarget);
     const data = {
       email: formData.get("email") as string,
@@ -49,9 +49,10 @@ export default function Signin({ session }: { session: Session | null }) {
         password: data.password,
       });
       if (result?.error) {
+        setErrors({});
         setError("Invalid credentials, please try again.");
       } else {
-        redirect("/home"); // Redirect on successful login
+        router.push("/home");
       }
     } catch (error) {
       if (error instanceof ZodError) {
@@ -60,11 +61,13 @@ export default function Signin({ session }: { session: Session | null }) {
         error.errors.forEach((err) => {
           formErrors[err.path[0] as "email" | "password"] = err.message;
         });
+        setError(null);
         setErrors(formErrors);
       } else {
-        // Handle other errors (e.g., network or server errors)
-        console.error(error);
+        setError("An unexpected error occurred: - " + error);
       }
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -87,7 +90,9 @@ export default function Signin({ session }: { session: Session | null }) {
         <div className="flex flex-col gap-1">
           <label
             htmlFor="email"
-            className="font-['Circular Std'] font-medium text-[14px] text-[#24786D] not-italic leading-[20px] tracking-[0.1px] "
+            className={`font-['Circular Std'] font-medium text-[14px] ${
+              errors.email ? "text-[#FF2D1B]" : "text-[#24786D]"
+            } not-italic leading-[20px] tracking-[0.1px] mt-4 `}
           >
             Your email
           </label>
@@ -99,13 +104,18 @@ export default function Signin({ session }: { session: Session | null }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
-            className="border-b-2 border-[#CDD1D0] my-4 bg-white py-2 px-1 font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]"
+            className={`border-b-2 ${
+              errors.email ? "border-[#FF2D1B]" : "border-[#CDD1D0]"
+            }  bg-white py-2  font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]`}
             required
           />
-          {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
+          {errors.email && <p className="error">{errors.email}</p>}
+
           <label
             htmlFor="password"
-            className="font-['Circular Std'] font-medium text-[14px] text-[#24786D] not-italic leading-[20px] tracking-[0.1px] mt-4 "
+            className={`font-['Circular Std'] font-medium text-[14px] ${
+              errors.password ? "text-[#FF2D1B]" : "text-[#24786D]"
+            } not-italic leading-[20px] tracking-[0.1px] mt-4 `}
           >
             Password
           </label>
@@ -117,16 +127,18 @@ export default function Signin({ session }: { session: Session | null }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
-            className="border-b-2 border-[#CDD1D0] my-4 bg-white py-2 px-1 font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]"
+            className={`border-b-2 ${
+              errors.password ? "border-[#FF2D1B]" : "border-[#CDD1D0]"
+            }  bg-white py-2  font-['Caros'] font-normal text-[16px] text-[#000E08] not-italic leading-[16px]`}
             required
           />
-          {errors.password && <p style={{ color: "red" }}>{errors.password}</p>}
+          {errors.password && <p className="error">{errors.password}</p>}
         </div>
 
         <div className="mb-[60px]">
           <input
             type="submit"
-            value="Log in"
+            value={loading ? "Logging in..." : "Log in"}
             disabled={disable}
             className={`
             w-[327px]  rounded-[16px]  font-semibold text-[16px] leading-[16px] p-4
@@ -142,7 +154,7 @@ export default function Signin({ session }: { session: Session | null }) {
           >
             Forgot password?
           </Link>
-          {error && <p style={{ color: "red" }}>{error}</p>}
+          {error && <p className="error !text-center !mt-5">{error}</p>}
         </div>
       </form>
     </div>

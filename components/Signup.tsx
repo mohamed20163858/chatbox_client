@@ -95,7 +95,7 @@ function SignUp({ session }: { session: Session | null }) {
           redirect: true,
           email: data.email,
           password: data.password,
-          callbackUrl: "/", // Redirect to a desired page after login
+          redirectTo: "/home", // Redirect to a desired page after login
         });
       }
     } catch (error) {

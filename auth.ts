@@ -57,7 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (!process.env.JWT_SECRET) {
         throw new Error("JWT_SECRET is not defined");
       }
-      console.log(process.env.JWT_SECRET);
+      // console.log(process.env.JWT_SECRET);
       const token = jwt.sign({ app: "Next.js" }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
