@@ -2,11 +2,13 @@
 import { auth } from "@/auth";
 import ResetPassword from "@/components/ResetPassword";
 import { redirect } from "next/navigation";
+export const dynamic = "force-dynamic";
 
-interface PageProps {
-  searchParams: { token?: string };
-}
-export default async function Page({ searchParams }: PageProps) {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ token: string }>;
+}) {
   const session = await auth();
   if (session?.user) redirect("/home");
   const { token } = await searchParams;
