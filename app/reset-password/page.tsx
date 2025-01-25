@@ -9,7 +9,7 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
   const session = await auth();
   if (session?.user) redirect("/home");
-  const token = await searchParams.token;
+  const { token } = await searchParams;
   if (!token || token.length !== 36) {
     redirect("/onboarding");
   }
