@@ -3,11 +3,10 @@ import { auth } from "@/auth";
 import ResetPassword from "@/components/ResetPassword";
 import { redirect } from "next/navigation";
 
-export default async function Page({
-  searchParams,
-}: {
+interface PageProps {
   searchParams: { token?: string };
-}) {
+}
+export default async function Page({ searchParams }: PageProps) {
   const session = await auth();
   if (session?.user) redirect("/home");
   const token = await searchParams.token;
